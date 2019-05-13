@@ -4,11 +4,15 @@
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
 \usepackage{algpseudocode}
 
 \title{CPSC 322 Introduction to AI}
 \author{Kaitian Xie}
 \date{May 11, 2019}
+
+\graphicspath{ {./images/} }
 
 \begin{document}
 
@@ -22,9 +26,137 @@
 \subsection{Intro to Search}
 % TODO
 
-\subsection{Uninformed Search}
+\subsubsection{Directed Acyclic Graph (DAG)}
 
-\subsubsection{Generic Search Algorithm}
+\begin{itemize}
+    \item \textbf{Directed ayclic graph}: a graph with no cycles and where the arcs have associated directions.
+\end{itemize}
 
+\subsubsection{Search with Costs}
+
+\begin{itemize}
+    \item \textbf{Cost of a path}: sum of costs of its arcs $cost(<n_0, \ldots, n_k>) = \sum\limits_{i=1}^{k} (<n_{i-1}, n_i>)$
+    \item \textbf{Optimal solution}: solution with minimal cost.
+\end{itemize}
+
+\subsection{Generic Search Algorithm}
+
+\begin{algorithmic}
+    \Require{a graph, a start node $n_0$, $goal(n)$}
+    \State{$frontier := [<n_0>]$}
+    \While{$frontier$ is not empty}
+        \State{Select and remove a path $<n_0, \ldots, n_k>$ from $frontier$}
+        \If{$goal(n_k)$}
+            \State{return $<n_0, \ldots, n_k>$}
+        \EndIf
+        \For{every neighbor $n$ of $n_k$}
+            \State{Add $<n_0, \ldots, n_k, n>$ to $frontier$}
+        \EndFor
+    \EndWhile
+\end{algorithmic}
+
+\begin{figure}[H]
+    \includegraphics[width=\textwidth]{generic_search_algo_visualization}
+    \centering
+\end{figure}
+
+\subsubsection{Branching Factor ($b$)}
+
+\begin{itemize}
+    \item \textbf{Forward branching factor}: number of arcs going out of a node
+    \item \textbf{Backward branching factor}: number of arcs going into a node
+\end{itemize}
+
+\subsubsection{Complete \& Optimal}
+
+\begin{itemize}
+    \item \textbf{Complete}: can find a solution.
+    \item \textbf{Optimal}: can find the best solution.
+\end{itemize}
+
+\subsubsection{Complexity}
+
+\begin{itemize}
+    \item \textbf{Time complexity}: amount of time needed in the worst-case scenario; expressed in terms of maximum path length ($m$) and maximum branching factor ($b$).
+    \item \textbf{Space complexity}: amount of space needed in the worst-case scenario; expressed in terms of $m$ \& $b$.
+\end{itemize}
+
+\subsection{Depth-First Search (DFS)}
+
+\begin{itemize}
+    \item $frontier$ is a stack $[p_1, p_2, \ldots, p_k]$
+    \item neighbors of last node of $p_1$ are $\{n_1, \ldots, n_k\}$
+    \item
+    \begin{algorithmic}
+        \While{$frontier$ is not empty}
+            \State{$p := frontier.pop()$}
+            \State{$n_{end} := $ last node of $p$}
+            \If{$goal(n_{end})$}
+                \State{Return $p$}
+            \EndIf
+            \State{$frontier.push((p, n_1), \ldots, (p, n_k))$}
+        \EndWhile
+    \end{algorithmic}
+    \item not complete because DFS may get ``stuck'' in a graph that has cycles.
+    \item not optimal because DFS may return a longer solution while a shorter solution exists
+    \item time complexity: $O(b^m)$
+    \item space complexity: $O(bm)$
+    \item DFS is appropriate when:
+        \begin{itemize}
+            \item space is restricted.
+            \item there are many solutions, perhaps with long path solutions, particularly for the case in which all paths lead to a solution.
+        \end{itemize}
+    \item DFS is inappropriate when:
+        \begin{itemize}
+            \item cycles
+            \item shallow solution
+            \item optimality is needed
+        \end{itemize}
+\end{itemize}
+
+\subsection{Breadth-First Search}
+
+\begin{itemize}
+    \item $frontier$ is a queue $[p_1, p_2, \ldots, p_k]$
+    \item neighbors of last node of $p_1$ are $\{n_1, \ldots, n_k\}$.
+    \item
+    \begin{algorithmic}
+        \While{$frontier$ is not empty}
+            \State{$p := frontier.poll()$}
+            \State{$n_{end} := $ last node of $p$}
+            \If{$goal(n_{end})$}
+                \State{Return $p$}
+            \EndIf
+            \State{$frontier.offer((p, n_1), \ldots, (p, n_k))$}
+        \EndWhile
+    \end{algorithmic}
+    \item complete because it doesn't get stuck in cycles
+    \item optimal because it guarantees to find the path that involves the fewest paths
+    \item time complexity: $O(b^m)$
+    \item space complexity: $O(b^m)$
+\end{itemize}
+
+\subsection{Iterative Deepening Search}
+
+\begin{itemize}
+    \item
+        \begin{itemize}
+            \item Look with DFS for solution at depths $1, 2, \ldots$
+            \item If a solution can't be found at depth $D$, try again at depth $D+1$
+            \item depth-bounded depth-first searcher
+            \item given a bound $B$, assume the paths of length $B$ can't be expanded.
+        \end{itemize}
+    \item time complexity: $O(b^m)$
+
+    \includegraphics[scale=0.3]{ids_time_complexity}
+    
+    \begin{align*}
+        b^m  + 2b^{m-1} + 3b^{m-2} + \ldots + mb 
+        &= b^m (1 + 2b^{-1} + 3b^{-2} + \ldots + mb^{1-m}) \\
+        & \leq b^m \sum\limits_{i=1}^{\infty} ib^{1-i} \\
+        &= b^m (\frac{b}{b-1})^2 \\
+        &= O(b^m)
+    \end{align*}
+\end{itemize}
 
 \end{document}
