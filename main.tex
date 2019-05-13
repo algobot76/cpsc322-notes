@@ -159,4 +159,27 @@
     \end{align*}
 \end{itemize}
 
+\subsection{Lowest-Cost-First Search (LCFS)}
+
+\begin{itemize}
+    \item
+    \begin{itemize}
+        \item Select a path with the lowest cost from $frontier$ (a priority queue).
+        \item not complete if there exists a cycle with zero or negative arc costs, otherwise it is complete
+        \item not optimal if negative costs exist, otherwise it is optimal
+        \item time complexity: $O(b^m)$
+        \item space complexity: $O(b^m)$
+            \begin{itemize}
+                \item costs are equal $\Rightarrow$ BFS
+            \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsection{Summary of Search Strategies}
+
+\begin{figure}[H]
+    \includegraphics[width=\textwidth]{summary_of_search_strategies}
+    \centering
+\end{figure}
+
 \end{document}
