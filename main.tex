@@ -39,6 +39,26 @@
     \item \textbf{Optimal solution}: solution with minimal cost.
 \end{itemize}
 
+\subsubsection{Heuristic}
+
+\begin{itemize}
+    \item \textbf{Search heuristic ($h(n)$)}: an estimate of the cost of the lowest-cost path from node $n$ to a goal node.
+    \item \textbf{Admissible heuristic}: $h(n)$ is admissible if it is never an overestimate, i.e. $h(n)$ is a lower bound. To construct an admissible heuristic, we can either:
+    \begin{itemize}
+        \item drop some constraints or
+        \item make less restrictions on actions
+    \end{itemize}
+    \item \textbf{Dominance}: If $h_2(n) \geq h_1(n)$ for every state $n$ (both admissible), then $h_2$ dominates $h_1$.
+    \item we can combine two admissible heuristic functions: $h(n) = max\{h_1(n), h_2(n)\}$.
+\end{itemize}
+
+\subsubsection{Uninformed Search vs Heuristic Search}
+
+\begin{itemize}
+    \item \textbf{Uninformed}: not taking the goal into account until the goal state is reached.
+    \item \textbf{Heuristic}: there exists extra knowledge to guide the search.
+\end{itemize}
+
 \subsection{Generic Search Algorithm}
 
 \begin{algorithmic}
@@ -173,6 +193,61 @@
                 \item costs are equal $\Rightarrow$ BFS
             \end{itemize}
     \end{itemize}
+\end{itemize}
+
+\subsection{Best-First Search}
+
+\begin{itemize}
+    \item Select a path from the $frontier$ with minimal h-value (for the end node).
+    \item The $frontier$ is implemented by a priority queue order by h-value.
+    \item This is a greedy approach since it always takes a locally best path.
+    \item not complete: if there exist low h-values in a cycle, BestFS gets stuck.
+    \item not optimal: a heuristic might be misleading.
+    \item time complexity: $O(b^m)$
+    \item space complexity: $O(b^m)$
+    \item BestFS is appropriate when:
+        \begin{itemize}
+            \item $h(n)$ is very good.
+        \end{itemize}
+\end{itemize}
+
+\subsection{$A^{*}$}
+
+\begin{itemize}
+    \item LCFS + BestFS
+    \item $f(p) = cost(p) + h(p)$
+    \item The $frontier$ is implemented by a priority queue ordered by f-value.
+    \item $A^{*}$ always selects a path that has the lowest estimated total distance to a goal.
+    \item complete: $a^{*}$ always tests shorter underestimate of the total cost, so not missing anything
+    \item optimal: $A^{*}$ is optimal if:
+        \begin{itemize}
+            \item $b$ is finite
+            \item costs are strictly positive
+            \item $h(n)$ is non-negative and admissible
+        \end{itemize}
+    \item proof of optimality: \textit{Lecture 8 slides 24-32}
+    \item optimal efficiency: among all optimal algorithms that start from the same start node and use the same heuristic, $A^{*}$ expands the minimal number of paths.
+\end{itemize}
+
+\subsection{Branch-and-Bound Search (B\&B)}
+
+\begin{itemize}
+    \item $frontier$ implemented a stack, similar to DFS
+    \item order of adding neighbours can be customized
+    \item keeps track of a lower bound and an upper bound on a each path:
+        \begin{itemize}
+            \item lower bound: $LB(p) = f(p) = cost(p) + h(p)$
+            \item upper bound: $UB = \text{cost of the best solution found so far}$ (initialize $UB = \infty$)
+        \end{itemize}
+    \item when a path $p$ is selected for expansion
+        \begin{itemize}
+            \item if $LB \geq UB$: remove $p$ from $frontier$
+            \item else expand $p$
+        \end{itemize}
+    \item not complete: B\&B gets stuck in a graph with cycles
+    \item optimal, but not optimal efficient
+    \item time complexity: $O(b^m)$
+    \item space complexity: $O(mb)$ (like DFS)
 \end{itemize}
 
 \subsection{Summary of Search Strategies}
