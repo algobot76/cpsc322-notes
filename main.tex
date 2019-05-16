@@ -250,11 +250,47 @@
     \item space complexity: $O(mb)$ (like DFS)
 \end{itemize}
 
+\subsection{Iterative Deepening $A^{*}$ ($IDA^{*}$)}
+
+\begin{itemize}
+    \item search depth-first, but to a fixed depth/bound
+    \item depth measured in f-values
+    \item if you don't find a solution, update the bound with the lowest f-value that passed the previous bound
+    \item time complexity: $O(b^m)$
+    \item space complexity: $O(mb)$
+\end{itemize}
+
+\subsection{Memory-Bounded $A^{*}$ ($MBA^{*}$)}
+
+\begin{itemize}
+    \item keep $frontier$ in memory as we can
+    \item if we need to free some memory, we delete:
+        \begin{itemize}
+            \item the worst paths (with highest f-values)
+            \item ``back them up'' to a common ancestor
+            \item update $h(n)$ of the ancestor if possible
+        \end{itemize}
+\end{itemize}
+
 \subsection{Summary of Search Strategies}
 
 \begin{figure}[H]
     \includegraphics[width=\textwidth]{summary_of_search_strategies}
     \centering
 \end{figure}
+
+\subsection{Cycle Checking}
+
+\begin{itemize}
+    \item Prune a path that ends in a node already on the path
+    \item Pruning doesn't remove an optimal solution.
+    \item linear time complexity
+\end{itemize}
+
+\subsection{Multiple-Path Pruning}
+
+\begin{itemize}
+    \item Prune a path to node $n$ that you already found a path to.
+\end{itemize}
 
 \end{document}
