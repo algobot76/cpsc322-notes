@@ -378,7 +378,10 @@
             \item one node for every constraint
             \item undirected edges between variable nodes and constraint nodes
         \end{itemize}
-    \item \textbf{Arc consistency}: an arc $<x, r(x, y)>$ is consistent if for each value $x$ in $dom(X)$, there is some value $y$ in $dom(Y)$ such that $r(x, y)$ is satisfied.
+    \item \textbf{Arc consistency}: an arc $<x, r(x, y)>$ is consistent if for each value $x$ in $dom(X)$, there is some value $y$ in $dom(Y)$ such that $r(x, y)$ is satisfied. A network is arc consistent if all its arcs are consistent.
+        \begin{itemize}
+            \item To enforce arc consistency, we remove $x$ from $dom(X)$ is there is no value $dom(Y)$ to satisfy the constraint.
+        \end{itemize}
 \end{itemize}
 
 \end{document}
