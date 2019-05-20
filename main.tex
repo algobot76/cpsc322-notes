@@ -303,4 +303,82 @@
     \item \textbf{Possible world}: a complete assignment of values to a set of variables.
 \end{itemize}
 
+\subsection{Constraints}
+
+\begin{itemize}
+    \item \textbf{Constraint}: restrictions on the values for one or more variables.
+        \begin{itemize}
+            \item function that returns true when given values for each variable satisfy the constraint
+            \item list of valid domain values for each variable participating in the constraint
+        \end{itemize}
+    \item \textbf{Unary constraint}: restriction involving a single variable.
+    \item \textbf{K-ary constraint}: restriction involving the domains of $k$ different variables.
+\end{itemize}
+
+\subsection{Constraint Satisfaction Problems (CSP)}
+
+\begin{itemize}
+    \item \textbf{Constraint satisfaction problem} consists of:
+    \begin{itemize}
+        \item a set of variables
+        \item a domain for each variable
+        \item a set of constraints
+    \end{itemize}
+    \item \textbf{Model} is an assignment of values to variables (i.e. possible world) that satisfies all of the constraints.
+\end{itemize}
+
+\subsection{Generate-and-Test Algorithm}
+
+\begin{algorithmic}
+    \For{$a$ in $domA$}
+        \For{$b$ in $domB$}
+            \For{$c$ in $domC$}
+                \If{$abc$ satisfies all constraints}
+                    \State \Return{$abc$}
+                \EndIf
+            \EndFor
+        \EndFor
+    \EndFor
+    \State \Return {$NULL$}
+\end{algorithmic}
+
+\begin{itemize}
+    \item can solve any CSP
+    \item bad runtime
+\end{itemize}
+
+\subsection{CSPs as Search Problems}
+
+\begin{itemize}
+    \item \textbf{States}: assignments of values to a subset of the variables.
+    \item \textbf{Start state}: the empty assignment.
+    \item \textbf{Neighbours}: nodes in which values are assigned to one additional variable.
+    \item \textbf{Goal(n)}: set of constraints
+    \item \textbf{Goal state}: a state which assigns a value to each variable, and satisfies all of the constraints.
+    \item \textbf{Solution}: possible world that satisfies the constraints.
+    \item \textit{Note}: 
+        \begin{itemize}
+            \item Path is unimportant.
+            \item depth = num of variables
+            \item $h(n)$ is useless since all solutions have the same distance from the goal
+            \item The tree is finite and has no cycles.
+        \end{itemize}
+    \item We use \underline{DFS} as our search strategy.
+    \item Pruning: if an end node violates one or more constraints, we a solution cannot exist beyond that node $\Rightarrow$ remove that path.
+\end{itemize}
+
+\subsection{Consistency}
+
+\begin{itemize}
+    \item Prune domains before searching.
+    \item \textbf{Domain consistency}: a variable is domain consistent if no value of its domain is ruled impossible by any unary constraint.
+    \item \textbf{Constraint network}: a graph with
+        \begin{itemize}
+            \item one node for every variable
+            \item one node for every constraint
+            \item undirected edges between variable nodes and constraint nodes
+        \end{itemize}
+    \item \textbf{Arc consistency}: an arc $<x, r(x, y)>$ is consistent if for each value $x$ in $dom(X)$, there is some value $y$ in $dom(Y)$ such that $r(x, y)$ is satisfied.
+\end{itemize}
+
 \end{document}
