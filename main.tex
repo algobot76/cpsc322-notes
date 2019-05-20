@@ -384,4 +384,51 @@
         \end{itemize}
 \end{itemize}
 
+\subsection{Arc Consistency Algorithm}
+
+\begin{itemize}
+    \item General idea:
+        \begin{enumerate}
+            \item Go through all the arcs.
+            \item Make each arc consistent by pruning if needed.
+            \item Reconsider consistent arcs that could be made inconsistent again by this pruning.
+            \item Eventually reach a ``fixed point'': all arcs are consistent.
+        \end{enumerate}
+    \item Pseudo-code:
+        \begin{algorithmic}
+            \State{$TDA \gets \text{all arcs in Constraint Network}$}
+            \While{$TDA$ is not empty}
+                \State{Select an arc $a$ from $TDA$}
+                \If{$a$ is not consistent}
+                    \State{Make $a$ consistent}
+                    \State{Add arcs to $TDA$ that may now be inconsistent}
+                \EndIf
+            \EndWhile
+        \end{algorithmic}
+    \item Detailed version:
+        \begin{figure}[H]
+            \includegraphics[width=\textwidth]{gac}
+            \centering
+        \end{figure}
+    \item Complexity (Worst-case)
+        \begin{itemize}
+            \item $d = \text{max size of a variable domain}$
+            \item $n = \text{number of variables}$
+            \item Assume all constraints are binary.
+            \item Max number of binary constraints = $\frac{n * (n - 1)}{2}$
+            \item The same arc can be inserted in $TDA$ $d$ times.
+            \item $d^2$ steps are involved in checking the consistency of an arc.
+            \item Overall complexity: $O(n^2d^3)$, better than DFS.
+        \end{itemize}
+    \item Outcomes:
+        \begin{enumerate}
+            \item One domain is empty $\Rightarrow$ no solution.
+            \item Each domain has a single value $\Rightarrow$ unique solution.
+            \item Some domains have more than one value $\Rightarrow$ zero or more solutions.
+                \begin{itemize}
+                    \item Arc consistency is not good enough $\Rightarrow$ we still need to search.
+                \end{itemize}
+        \end{enumerate}
+\end{itemize}
+
 \end{document}
