@@ -431,4 +431,146 @@
         \end{enumerate}
 \end{itemize}
 
+\subsection{Domain Splitting}
+
+\begin{itemize}
+    \item Split a problem in a number of disjoint cases, so $sol(CSP) = \bigcup\limits_{i} sol(CSP_i)$.
+    \item By splitting, we may be able to run AC again. However, we need to keep all CSPs around.
+    \item Arc consistency + domain splitting:
+        \begin{itemize}
+            \item \textbf{States}: $vector(D(V_1), \ldots, D(V_2))$ of remaining domains, with $D(V_i) \subseteq dom(V_i)$ for each $V_i$.
+            \item \textbf{Start state}: vector of original domains $(dom(V_i), \ldots, dom(V_n))$
+            \item \textbf{Successor function}: reduce one of the domains + run arc consistency
+            \item \textbf{Goal state}: vector of unary domains that satisfy all constraints:
+                \begin{itemize}
+                    \item only one value left for each variable
+                    \item assignment of each variable to its single value is a model
+                \end{itemize}
+            \item \textbf{Solution}: that assignment
+        \end{itemize}
+    \item \#CSPs to keep at a time: $O(bm)$
+\end{itemize}
+
+\subsection{Local Search}
+
+\begin{itemize}
+    \item general idea:
+        \begin{enumerate}
+            \item Start from a possible world.
+            \item Generate some neighbors.
+            \item Move from the current node to a neighbor.
+        \end{enumerate}
+    \item \textbf{CSP}: a set of variables, domains for these variables, and constraints on their joint values.
+    \item \textbf{Node}: a complete assignment to all of the variables.
+    \item \textbf{Neighbor relation}: specified by some small incremental change to the variable assignment.
+    \item \textbf{Scoring function}: judges cost of a node (want to minimize).
+    \item \textbf{Iterative best improvement}: selects the neighbor that optimizes some evaluation function (minimal number of constraint violations).
+        \begin{itemize}
+            \item \textbf{Evaluation function (h(n))}: number of constraint violations in state $n$.
+            \item \textbf{Greedy descent}: evaluates $h(n)$ for each neighbor, picks the neighbor $n$ with minimal $h(n)$.
+            \item \textbf{Hill climbing}: equivalent algorithm for maximization problems (maximizes the number of satisfied constraints).
+        \end{itemize}
+    \item
+        \includegraphics[scale=0.6]{general_local_search_algorithm}
+    \item Most research in local search is about finding effective mechanisms for escaping from local minima. The iterative best improvement gets tapped in locally optimal minima.
+\end{itemize}
+
+\subsection{Stochastic Local Search (SLS)}
+
+\begin{itemize}
+    \item \textbf{Start node}: random assignment
+    \item \textbf{Goal}: assignment with zero unsatisfied constraints
+    \item \textbf{Heuristic function (h)}: \# unsatisfied constraints
+    \begin{itemize}
+        \item the lower, the better
+    \end{itemize}
+    \item SLS is a mix of 
+    \begin{itemize}
+        \item \textbf{Greedy descent}: move to a neighbor with lowest $h$
+        \item \textbf{Random walk}: take some random steps, i.e. move to neighbor with some randomness
+        \item \textbf{Random restart}: reassigning values to all variables
+    \end{itemize}
+\end{itemize}
+
+\subsection{Greedy Descent vs Random Sampling}
+
+\begin{itemize}
+    \item \textbf{Greedy descent}:
+        \begin{itemize}
+            \item good for finding local minima
+            \item bad for exploring new parts of the search space
+        \end{itemize}
+    \item \textbf{Random sampling}:
+        \begin{itemize}
+            \item good for exploring new parts of the search space
+            \item bad for finding local minima
+        \end{itemize}
+\end{itemize}
+
+\subsection{Selecting Neighbors}
+
+\begin{itemize}
+    \item \textbf{One stage selection}:
+        \begin{itemize}
+            \item the best neighbor
+            \item a random variable-value pair
+        \end{itemize}
+    \item \textbf{Two state selection} (first select variable $V$, then new value for $V$):
+        \begin{itemize}
+            \item selecting variables:
+                \begin{itemize}
+                    \item the variable which participates in the largest number of conflicts
+                    \item a random variable that participates in some conflict
+                    \item a random variable
+                \end{itemize}
+            \item selecting rules:
+                \begin{itemize}
+                    \item the best value for the chosen variable
+                    \item a random value for the chosen variable
+                \end{itemize}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Comparing SLS Algorithms}
+
+\begin{itemize}
+    \item Time taken is a random variable.
+    \item Runtime variations of 2 order of magnitude in repeated runs.
+    \item Stagnation $\Rightarrow$ $\infty$ runtime
+\end{itemize}
+
+\subsection{SLS Variants}
+
+\begin{itemize}
+    \item \textbf{Simulated annealing}
+        \begin{itemize}
+            \item Key idea: Change the degree of randomness.
+            \item Annealing: a metallurgical process where metals are heated and then slowly cooled.
+                \begin{itemize}
+                    \item starts with high tendency to take random steps.
+                    \item over time, more likely to follow the scoring function.
+                \end{itemize}
+            \item Algorithm:
+                \begin{itemize}
+                    \item At the node $n$. Pick a variable at random and a new value at random. Generate $n'$.
+                    \item if $n'$ is an improvement ($h(n) - h(n') > 0$, adopt it; otherwise, adopt it with a probability: $e = \frac{h(n) - h(n')}{T}$
+                \end{itemize}
+        \end{itemize}
+    \item \textbf{Taboo Search}
+        \begin{itemize}
+            \item Make partial assignments as Taboo.
+            \begin{itemize}
+                \item stops repeatedly visiting the same (or similar) local minima.
+            \end{itemize}
+            \item A queue of $k$ variable-value pairs that are taboo.
+                \begin{itemize}
+                    \item $k$ needs to be optimized empirically.
+                \end{itemize}
+        \end{itemize}
+    \item \textbf{Population Based SLS}
+        \begin{itemize}
+            \item 
+        \end{itemize}
+\end{itemize}
+
 \end{document}
