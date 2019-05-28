@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{algpseudocode}
+\usepackage{multicol}
 
 \title{CPSC 322 Introduction to AI}
 \author{Kaitian Xie}
@@ -569,8 +570,152 @@
         \end{itemize}
     \item \textbf{Population Based SLS}
         \begin{itemize}
-            \item 
+            \item Maintain a population of $k$ individuals
+                \begin{itemize}
+                    \item At every stage, update your population.
+                    \item Whenever one individual is a solution, report it.
+                \end{itemize}
         \end{itemize}
+    \item \textbf{SLS for Constraint Optimization Problems}
+        \begin{itemize}
+            \item constraint optimization problems
+                \begin{itemize}
+                    \item hard constraints: need to satisfy all of them.
+                    \item soft constraints: need to satisfy them as well as possible.
+                    \item can have weighted constraints:
+                        \begin{itemize}
+                            \item minimize $h(n)$ = sum of weights of unsatisfied constraints in $n$.
+                            \item hard constraints have large weights.
+                            \item some soft constraints can be more important than other soft constraints $\Rightarrow$ larger weights.
+                        \end{itemize}
+                \end{itemize}
+        \end{itemize}
+\end{itemize}
+
+\section{Planning}
+
+\subsection{Intro to Planning}
+
+\begin{itemize}
+    \item \textbf{Planning}: build a sequence of actions that, if executed, takes the agent from the current state to a state that achieves a goal.
+        \begin{itemize}
+            \item actions = assignments of values to variables
+            \item no notion of path to a solution: only final assignment matters.
+        \end{itemize}
+    \item A planning problem consists of
+        \begin{itemize}
+            \item goal
+            \item description of states of the world
+            \item description of available actions
+                \begin{itemize}
+                    \item when each action can be applied
+                    \item what its effects are
+                \end{itemize}
+        \end{itemize}
+    \item STRIPS representation:
+        \begin{itemize}
+            \item \textbf{Preconditions}: a set of assignments to features must be satisfied in order for the action to be applicable in a state.
+            \item \textbf{Effects}: a set of assignments to features that are caused by the action.
+        \end{itemize}
+    \item A planning problem can be either a pure search problem/CSP problem.
+\end{itemize}
+
+\subsection{Forward Planning}
+
+\begin{itemize}
+    \item Search in the state-space graph:
+        \begin{itemize}
+            \item \textbf{States}: possible worlds.
+            \item \textbf{Arcs}: possible actions in state $s$.
+            \item \textbf{Plan}: a path from the initial state to a state that satisfies the goal.
+        \end{itemize}
+    \item Standard Search vs. Specific R\&R Systems
+        \begin{multicols}{2}
+            CSP
+            \begin{itemize}
+                \item \textbf{State}: assignments to a subset of the variables.
+                \item \textbf{Successor function}: assign values to a ``free'' variable.
+                \item \textbf{Goal test}: set of constraints.
+                \item \textbf{Solution}: possible world that satisfies the constraints.
+                \item \textbf{Heuristic funciton}: none (all solutions at the same distance from start)
+            \end{itemize}
+            
+            \columnbreak
+            
+            Planning
+            \begin{itemize}
+                \item \textbf{State}: full assignments of values to features
+                \item \textbf{Success function}: states reachable by applying actions with preconditions satisfied in the current state.
+                \item \textbf{Goal test}: partial assignment of values to features.
+                \item \textbf{Solution}: a sequence of actions.
+                \item \textbf{Heuristic function}
+            \end{itemize}
+        \end{multicols}
+        \item Heuristics for forward planning: number of actions needed to get from $s$ to goal.
+            \begin{itemize}
+                \item Count number of unsatisfied sub-goals (may not be admissible when an action can achieve multiple sub-goals).
+                \item Plan by ignoring action preconditions.
+            \end{itemize}
+\end{itemize}
+
+\subsection{Planning as CSP}
+
+\begin{itemize}
+    \item Action preconditions and effects are virtually constraints between:
+        \begin{itemize}
+            \item the action
+            \item the states in which it can be applied
+            \item the states that it generate
+        \end{itemize}
+    \item Make both states and actions into variables.
+    \item The action constraints relate to states at a given time $t$, the corresponding valid actions and the resulting states at $t+1$ (as many as state and action variables as we have planning steps).
+    \item \textbf{Horizon k}: ``unroll the plan'' for a fixed number of steps.
+        \begin{itemize}
+            \item Construct a CSP variable for each STRIPS state variable at each time step from 0 to $k$.
+            \item Construct a boolean CSP variable for each STRIPS action at eacth time step form 0 to $k-1$.
+        \end{itemize}
+\end{itemize}
+
+\section{Logic}
+
+\subsection{Intro to Logic}
+
+\begin{itemize}
+    \item \textbf{Syntax}: specifies the symbols used, and how they can be combined to form legal sentences.
+        \begin{itemize}
+            \item knowledge base: set of sentences in the language
+        \end{itemize}
+    \item \textbf{Semantics}: specifies the meaning of symbols and sentences.
+    \item \textbf{Reasoning theory/proof procedure}: a specification of how an answer can be produced
+        \begin{itemize}
+            \item \textbf{Sound}: only generates correct answers with respect to the semantics
+            \item \textbf{Complete}: guaranteed to find an answer if it exists.
+        \end{itemize}
+\end{itemize}
+
+\subsection{Propositional Definite Clause Logic (PDCL)}
+
+\begin{itemize}
+    \item \textbf{Atom}: symbol starting with a lower case letter.
+    \item \textbf{Body}: 
+        \begin{itemize}
+            \item atom
+            \item of the form $b_1 \wedge b_2$ ($b_1$ and $b_2$ are bodies)
+        \end{itemize}
+    \item \textbf{Definite clause}:
+        \begin{itemize}
+            \item atom
+            \item rule of the form $h \leftarrow b$ ($h$ is an atom and $b$ is a body)
+        \end{itemize}
+    \item \textbf{Knowledge base (KB)}: set of definite clauses.
+\end{itemize}
+
+\subsection{Semantics}
+
+\begin{itemize}
+    \item Semantics allow you to relate the symbols in the logic to the domain you're trying to model.
+    \item \textbf{Interpretation I} assigns a truth value to each atom.
+    \item 
 \end{itemize}
 
 \end{document}
