@@ -8,6 +8,7 @@
 \usepackage{float}
 \usepackage{algpseudocode}
 \usepackage{multicol}
+\usepackage[hidelinks]{hyperref}
 
 \title{CPSC 322 Introduction to AI}
 \author{Kaitian Xie}
@@ -18,6 +19,9 @@
 \begin{document}
 
 \maketitle
+\pagebreak
+
+\tableofcontents
 \pagebreak
 
 \section{Introduction}
@@ -81,7 +85,7 @@
     \centering
 \end{figure}
 
-\subsubsection{Branching Factor ($b$)}
+\subsubsection{Branching Factor (b)}
 
 \begin{itemize}
     \item \textbf{Forward branching factor}: number of arcs going out of a node
@@ -212,7 +216,7 @@
         \end{itemize}
 \end{itemize}
 
-\subsection{$A^{*}$}
+\subsection{A*}
 
 \begin{itemize}
     \item LCFS + BestFS
@@ -251,7 +255,7 @@
     \item space complexity: $O(mb)$ (like DFS)
 \end{itemize}
 
-\subsection{Iterative Deepening $A^{*}$ ($IDA^{*}$)}
+\subsection{Iterative Deepening A* (IDA*)}
 
 \begin{itemize}
     \item search depth-first, but to a fixed depth/bound
@@ -261,7 +265,7 @@
     \item space complexity: $O(mb)$
 \end{itemize}
 
-\subsection{Memory-Bounded $A^{*}$ ($MBA^{*}$)}
+\subsection{Memory-Bounded A* (MBA*)}
 
 \begin{itemize}
     \item keep $frontier$ in memory as we can
