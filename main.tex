@@ -718,4 +718,29 @@
     \item 
 \end{itemize}
 
+\subsection{Bottom-Up Proof Procedure}
+
+\begin{itemize}
+    \item proof procedure:
+    \begin{algorithmic}
+        \State{$C \gets \{\}$}
+        \Repeat
+            \State{Select clause $h \rightarrow b_1 \wedge \ldots \wedge b_m$ in $KB$ such that $b_i \in C$ for all $i$, and $h \notin C$}
+            \State{$C \gets C \cup \{h\}$}
+        \Until{no more clauses can be selected}
+    \end{algorithmic}
+    
+    $KB \vdash G$ if $G \subseteq C$ at the end of this procedure ($C$ is a fixed point).
+    \item 
+    \includegraphics[scale=0.45]{soundness_of_bu}
+    \item proof of completeness
+        \begin{itemize}
+            \item \textbf{Minimal model}: a specific interpretation of $KB$
+                \begin{itemize}
+                    \item every atom in $C$ at the end of BU is true
+                    \item every other atom is false
+                \end{itemize}
+        \end{itemize}
+\end{itemize}
+
 \end{document}
