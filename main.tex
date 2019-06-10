@@ -26,10 +26,59 @@
 
 \section{Introduction}
 
+\subsection{What is AI?}
+
+\begin{itemize}
+    \item \textbf{Rationality}: an abstract ideal of intelligence, rather than ``whatever humans think/do''
+    \item \textbf{Intelligent agents}: artifacts that act rationally in their environment:
+        \begin{itemize}
+            \item Actions are appropriate for their goals and circumstances.
+            \item Flexible to changing environments and goals.
+            \item Learn from experience.
+            \item Make appropriate choices given perceptual limitations and limited resources.
+        \end{itemize}
+\end{itemize}
+
+\subsection{Representation and Reasoning (R\&R) System}
+
+\begin{itemize}
+    \item A representational language to describe the environment and problems to be solved.
+    \item Computational reasoning procedures to compute a solution to a problem.
+\end{itemize}
+
+\subsection{Representational Dimensions}
+
+\begin{itemize}
+    \item Problem types:
+        \begin{itemize}
+            \item \textbf{Static}: finding a solution doesn't involve reasoning into the future.
+                \begin{itemize}
+                    \item \textbf{Constraint satisfaction}: finding the state that satisfies set of constraints.
+                    \item \textbf{Answering query}: is a given proposition true/likely given what is known?
+                \end{itemize}
+            \item \textbf{Sequential}: finding a solution requires looking for a number of steps into the future.
+                \begin{itemize}
+                    \item \textbf{Planning}: finding the sequence of actions to reach a goal state/maximize.
+                \end{itemize}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Deterministic vs. Stochastic}
+
+\begin{itemize}
+    \item \textbf{Sensing uncertainty}: the agent cannot fully observe the current state of the world.
+    \item \textbf{Effect uncertainty}: the agent doesn't know for sure the effects of its actions.
+\end{itemize}
+
+\subsection{States, Features, and Relationships}
+
+\begin{itemize}
+    \item An environment can be modelled in terms of states, features, and relationships.
+\end{itemize}
+
 \section{Search}
 
 \subsection{Intro to Search}
-% TODO
 
 \subsubsection{Directed Acyclic Graph (DAG)}
 
@@ -79,6 +128,11 @@
         \EndFor
     \EndWhile
 \end{algorithmic}
+
+\begin{itemize}
+    \item How paths are selected from the $frontier$ defines the search strategy.
+    \item The order in which paths are added to $frontier$ is not specified.
+\end{itemize}
 
 \begin{figure}[H]
     \includegraphics[width=\textwidth]{generic_search_algo_visualization}
@@ -223,7 +277,7 @@
     \item $f(p) = cost(p) + h(p)$
     \item The $frontier$ is implemented by a priority queue ordered by f-value.
     \item $A^{*}$ always selects a path that has the lowest estimated total distance to a goal.
-    \item complete: $a^{*}$ always tests shorter underestimate of the total cost, so not missing anything
+    \item complete: $A^{*}$ always tests shorter underestimate of the total cost, so not missing anything
     \item optimal: $A^{*}$ is optimal if:
         \begin{itemize}
             \item $b$ is finite
@@ -232,6 +286,8 @@
         \end{itemize}
     \item proof of optimality: \textit{Lecture 8 slides 24-32}
     \item optimal efficiency: among all optimal algorithms that start from the same start node and use the same heuristic, $A^{*}$ expands the minimal number of paths.
+    \item time complexity: $O(b^m)$
+    \item space complexity: $O(b^m)$
 \end{itemize}
 
 \subsection{Branch-and-Bound Search (B\&B)}
@@ -318,6 +374,9 @@
         \end{itemize}
     \item \textbf{Unary constraint}: restriction involving a single variable.
     \item \textbf{K-ary constraint}: restriction involving the domains of $k$ different variables.
+        \begin{itemize}
+            \item can be represented as unary constraints.
+        \end{itemize}
 \end{itemize}
 
 \subsection{Constraint Satisfaction Problems (CSP)}
@@ -603,25 +662,22 @@
 \begin{itemize}
     \item \textbf{Planning}: build a sequence of actions that, if executed, takes the agent from the current state to a state that achieves a goal.
         \begin{itemize}
-            \item actions = assignments of values to variables
-            \item no notion of path to a solution: only final assignment matters.
+            \item Both states and actions as set of features.
+            \item Actions as preconditions and effects defined on state features.
+            \item Agent can reason more deliberately about which actions to consider to achieve its goals.
         \end{itemize}
-    \item A planning problem consists of
-        \begin{itemize}
-            \item goal
-            \item description of states of the world
-            \item description of available actions
-                \begin{itemize}
-                    \item when each action can be applied
-                    \item what its effects are
-                \end{itemize}
-        \end{itemize}
+    \item A planning problem can be solved as a pure search problem or CSP.
+    \item Delivery Robot Example (Lecture 16 slides 13 - 16)
     \item STRIPS representation:
         \begin{itemize}
-            \item \textbf{Preconditions}: a set of assignments to features must be satisfied in order for the action to be applicable in a state.
-            \item \textbf{Effects}: a set of assignments to features that are caused by the action.
+            \item An action has two parts:
+                \begin{itemize}
+                    \item \textbf{Preconditions}: a set of assignments to variables that must be satisfied in order for the action to be legal/valid/applicable.
+                    \item \textbf{Effects}: a set of assignments to variables that are caused by the action.
+                \end{itemize}
+        \item \textbf{Assumption}: all features not explicitly changed by an action stay unchanged
+        \item Example (Lecture 16 slides 20 - 22)
         \end{itemize}
-    \item A planning problem can be either a pure search problem/CSP problem.
 \end{itemize}
 
 \subsection{Forward Planning}
@@ -629,9 +685,10 @@
 \begin{itemize}
     \item Search in the state-space graph:
         \begin{itemize}
-            \item \textbf{States}: possible worlds.
+            \item \textbf{States}: possible worlds (full assignments of values to features).
             \item \textbf{Arcs}: possible actions in state $s$.
             \item \textbf{Plan}: a path from the initial state to a state that satisfies the goal.
+            \item \textbf{Solution}: a sequence of actions to reach the goal
         \end{itemize}
     \item Standard Search vs. Specific R\&R Systems
         \begin{multicols}{2}
@@ -652,31 +709,51 @@
                 \item \textbf{Success function}: states reachable by applying actions with preconditions satisfied in the current state.
                 \item \textbf{Goal test}: partial assignment of values to features.
                 \item \textbf{Solution}: a sequence of actions.
-                \item \textbf{Heuristic function}
+                \item \textbf{Heuristic function} (see below)
             \end{itemize}
         \end{multicols}
         \item Heuristics for forward planning: number of actions needed to get from $s$ to goal.
             \begin{itemize}
-                \item Count number of unsatisfied sub-goals (may not be admissible when an action can achieve multiple sub-goals).
-                \item Plan by ignoring action preconditions.
+                \item \textbf{Sub-goal}: a particular assignment for one of the features in the goal
+                \item 2 simplifications:
+                    \begin{itemize}
+                        \item all features are binary: T/F
+                        \item goals and preconditions can only be assignments to T
+                    \end{itemize}
+                \item Each action has add list and delete list:
+                    \begin{itemize}
+                        \item \textbf{Add list}: features made T by the action.
+                        \item \textbf{Delete list}: features made F by the action
+                    \end{itemize}
+                \item Strategies:
+                    \begin{itemize}
+                        \item Ignore delete list.
+                        \item Count number of unsatisfied sub-goals.
+                        \item Ignore action preconditions.
+                    \end{itemize}
+            \end{itemize}
+        \item Forward planning works well
+            \begin{itemize}
+                \item in combination with other techniques.
+                \item for specific domains.
             \end{itemize}
 \end{itemize}
 
 \subsection{Planning as CSP}
 
 \begin{itemize}
-    \item Action preconditions and effects are virtually constraints between:
+    \item Constraints: preconditions and effects
         \begin{itemize}
-            \item the action
-            \item the states in which it can be applied
-            \item the states that it generate
+            \item action
+            \item state in which it can be applied to
+            \item state that it can generate
         \end{itemize}
-    \item Make both states and actions into variables.
-    \item The action constraints relate to states at a given time $t$, the corresponding valid actions and the resulting states at $t+1$ (as many as state and action variables as we have planning steps).
-    \item \textbf{Horizon k}: ``unroll the plan'' for a fixed number of steps.
+    \item Variables: states and actions
+    \item Constraints relate to states at a given time $t$, the corresponding valid actions and the resulting states at $t + 1$.
+    \item \textbf{Horizon k}: ``unrolling the plan'' for a fixed number of steps.
         \begin{itemize}
-            \item Construct a CSP variable for each STRIPS state variable at each time step from 0 to $k$.
-            \item Construct a boolean CSP variable for each STRIPS action at eacth time step form 0 to $k-1$.
+            \item Construct a CSP variable for each STRIPS state variable at each time step from $0$ to $k$.
+            \item Construct a boolean CSP variable for each STRIPS action at each time step from $0$ to $k$.
         \end{itemize}
 \end{itemize}
 
