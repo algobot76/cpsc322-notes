@@ -236,6 +236,7 @@
         &= b^m (\frac{b}{b-1})^2 \\
         &= O(b^m)
     \end{align*}
+    \item space complexity: $O(mb)$
 \end{itemize}
 
 \subsection{Lowest-Cost-First Search (LCFS)}
@@ -249,7 +250,7 @@
         \item time complexity: $O(b^m)$
         \item space complexity: $O(b^m)$
             \begin{itemize}
-                \item costs are equal $\Rightarrow$ BFS
+                \item if costs are equal $\Rightarrow$ BFS
             \end{itemize}
     \end{itemize}
 \end{itemize}
@@ -828,6 +829,36 @@
                     \item every atom in $C$ at the end of BU is true
                     \item every other atom is false
                 \end{itemize}
+        \end{itemize}
+\end{itemize}
+
+\section*{Appendix}
+
+\subsection*{Learning Goals}
+
+\begin{itemize}
+    \item Search
+        \begin{itemize}
+            \item Identify real world examples that make use of deterministic, goal-driven planning agents.
+            \item Assess the size of the search space of a given search problem.
+            \item Trace through/implement a generic search algorithm.
+            \item Determine basic properties of search algorithms: completeness, optimality, time and space complexity of search algorithms.
+            \item Select the most appropriate search algorithms for specific problems:
+                \begin{itemize}
+                    \item BFS vs. DFS vs. IDS
+                    \item LCFS vs. BestFS
+                    \item A* vs B\&B vs. IDA* vs MBA*
+                \end{itemize}
+            \item Define/read/write/trace/debug different search algorithms
+                \begin{itemize}
+                    \item With/without cost
+                    \item Informed/uninformed
+                \end{itemize}
+            \item Construct admissible heuristics for a given problem.
+            \item Verify Heuristic Dominance.
+            \item Combine admissible heuristics.
+            \item Formally prove A* optimality.
+            \item Justify and describe methods for pruning cycles and repeated states (multiple paths).
         \end{itemize}
 \end{itemize}
 
