@@ -776,7 +776,7 @@
 \begin{itemize}
     \item \textbf{Syntax}: specifies the symbols used, and how they can be combined to form legal sentences.
         \begin{itemize}
-            \item knowledge base: set of sentences in the language
+            \item \textbf{Knowledge base}: set of sentences in the language
         \end{itemize}
     \item \textbf{Semantics}: specifies the meaning of symbols and sentences.
     \item \textbf{Reasoning theory/proof procedure}: a specification of how an answer can be produced
@@ -789,31 +789,54 @@
 \subsection{Propositional Definite Clause Logic (PDCL)}
 
 \begin{itemize}
-    \item \textbf{Atom}: symbol starting with a lower case letter.
-    \item \textbf{Body}: 
+    \item Syntax
         \begin{itemize}
-            \item atom
-            \item of the form $b_1 \wedge b_2$ ($b_1$ and $b_2$ are bodies)
+            \item \textbf{Atom}: symbol starting with a lower case letter.
+            \item \textbf{Body}: 
+                \begin{itemize}
+                    \item atom
+                    \item of the form $b_1 \wedge b_2$ ($b_1$ and $b_2$ are bodies)
+                \end{itemize}
+            \item \textbf{Definite clause}:
+                \begin{itemize}
+                    \item atom
+                    \item rule of the form $h \leftarrow b$ ($h$ is an atom and $b$ is a body)
+                        \begin{itemize}
+                            \item ``$h$ if $b$''
+                        \end{itemize}
+                \end{itemize}
+            \item \textbf{Knowledge base (KB)}: set of definite clauses.
         \end{itemize}
-    \item \textbf{Definite clause}:
+    \item Semantics
         \begin{itemize}
-            \item atom
-            \item rule of the form $h \leftarrow b$ ($h$ is an atom and $b$ is a body)
+            \item \textbf{Interpretation I} assigns a truth value to each atom.
+            \item Use the interpretation to determine the truth values of clauses:
+                \begin{itemize}
+                    \item A body $b_1 \wedge b_2$ is true in I if and only if $b_1$ is true in I and $b_2$ is true in I.
+                    \item A rule $h \leftarrow b$ is false in I if and only if $b$ is true in I and $h$ is false in I.
+                    \item A KB is true in I if and only if every clause in KB is true in I.
+                    \item A model of KB is an interpretation in which KB is true.
+                \end{itemize}
+            \item If $KB$ is a set of clauses and $G$ is a conjunction of atoms, G is a logical consequence of KB ( $KB \vDash G$) if $G$ is true in every model of $KB$.
         \end{itemize}
-    \item \textbf{Knowledge base (KB)}: set of definite clauses.
 \end{itemize}
 
-\subsection{Semantics}
+\subsection{Proof Procedures}
 
 \begin{itemize}
-    \item Semantics allow you to relate the symbols in the logic to the domain you're trying to model.
-    \item \textbf{Interpretation I} assigns a truth value to each atom.
-    \item 
+    \item \textbf{Proof procedure}: a mechanically derivable demonstration that a formula logically follows from a KB.
+    \item Given a proof procedure $P$, $KB \vdash_P g$ means $g$ can be derived from KB with the proof procedure.
+    \item A proof procedure $P$ is sound if $KB \vdash_P g$ implies $KB \vDash g$.
+    \item A proof procedure $P$ is complete if $KB \vDash g$ implies $KB \vdash_P g$.
 \end{itemize}
 
 \subsection{Bottom-Up Proof Procedure}
 
 \begin{itemize}
+    \item If $h \leftarrow b_1 \wedge \ldots \wedge b_m$ is a clause in $KB$ and each $b_i$ has been derived, then $h$ can be derived.
+        \begin{itemize}
+            \item If $m = 0$, $h$ becomes a fact.
+        \end{itemize}
     \item proof procedure:
     \begin{algorithmic}
         \State{$C \gets \{\}$}
@@ -826,14 +849,8 @@
     $KB \vdash G$ if $G \subseteq C$ at the end of this procedure ($C$ is a fixed point).
     \item 
     \includegraphics[scale=0.45]{soundness_of_bu}
-    \item proof of completeness
-        \begin{itemize}
-            \item \textbf{Minimal model}: a specific interpretation of $KB$
-                \begin{itemize}
-                    \item every atom in $C$ at the end of BU is true
-                    \item every other atom is false
-                \end{itemize}
-        \end{itemize}
+    \item
+    \includegraphics[scale=0.45]{completeness_of_bu}
 \end{itemize}
 
 \subsection{Datalog}
