@@ -430,6 +430,8 @@
         \end{itemize}
     \item We use \underline{DFS} as our search strategy.
     \item Pruning: if an end node violates one or more constraints, we a solution cannot exist beyond that node $\Rightarrow$ remove that path.
+    \item Efficiency depends on the order in which variables are expanded.
+    \item \textbf{Degree ``heuristics''}: choosing variables invovled in more constraints is better.
 \end{itemize}
 
 \subsection{Consistency}
@@ -537,6 +539,7 @@
         \end{itemize}
     \item
         \includegraphics[scale=0.6]{general_local_search_algorithm}
+    \item Only the current node is kept at each step $\Rightarrow$ no backtracking
     \item Most research in local search is about finding effective mechanisms for escaping from local minima. The iterative best improvement gets tapped in locally optimal minima.
 \end{itemize}
 
@@ -580,7 +583,7 @@
             \item the best neighbor
             \item a random variable-value pair
         \end{itemize}
-    \item \textbf{Two state selection} (first select variable $V$, then new value for $V$):
+    \item \textbf{Two stage selection} (first select variable $V$, then new value for $V$):
         \begin{itemize}
             \item selecting variables:
                 \begin{itemize}
@@ -602,7 +605,7 @@
     \item Time taken is a random variable.
     \item Runtime variations of 2 order of magnitude in repeated runs.
     \item Stagnation $\Rightarrow$ $\infty$ mean runtime
-    \item Runtime distribu2tion
+    \item Runtime distribution
         \begin{itemize}
             \item x-axis: runtime/number of steps
             \item y-axis: proportion/number of runs solved in that runtime
@@ -626,6 +629,7 @@
                     \item At the node $n$. Pick a variable at random and a new value at random. Generate $n'$.
                     \item if $n'$ is an improvement ($h(n) - h(n') > 0$, adopt it; otherwise, adopt it with a probability: $e = \frac{h(n) - h(n')}{T}$
                 \end{itemize}
+            \item If $T$ decreases slow enough, then simulated annealing search will find a global optimum with probability approaching 1.
         \end{itemize}
     \item \textbf{Taboo Search}
         \begin{itemize}
@@ -832,33 +836,106 @@
         \end{itemize}
 \end{itemize}
 
-\section*{Appendix}
+\section{Appendix}
 
-\subsection*{Learning Goals}
+\subsection{Learning Goals}
+
+\subsubsection{Search}
 
 \begin{itemize}
-    \item Search
+    \item Identify real world examples that make use of deterministic, goal-driven planning agents.
+    \item Assess the size of the search space of a given search problem.
+    \item Trace through/implement a generic search algorithm.
+    \item Determine basic properties of search algorithms: completeness, optimality, time and space complexity of search algorithms.
+    \item Select the most appropriate search algorithms for specific problems:
         \begin{itemize}
-            \item Identify real world examples that make use of deterministic, goal-driven planning agents.
-            \item Assess the size of the search space of a given search problem.
-            \item Trace through/implement a generic search algorithm.
-            \item Determine basic properties of search algorithms: completeness, optimality, time and space complexity of search algorithms.
-            \item Select the most appropriate search algorithms for specific problems:
+            \item BFS vs. DFS vs. IDS
+            \item LCFS vs. BestFS
+            \item A* vs B\&B vs. IDA* vs MBA*
+        \end{itemize}
+    \item Define/read/write/trace/debug different search algorithms
+        \begin{itemize}
+            \item With/without cost
+            \item Informed/uninformed
+        \end{itemize}
+    \item Construct admissible heuristics for a given problem.
+    \item Verify Heuristic Dominance.
+    \item Combine admissible heuristics.
+    \item Formally prove A* optimality.
+    \item Justify and describe methods for pruning cycles and repeated states (multiple paths).
+\end{itemize}
+
+\subsubsection{CSP}
+
+\begin{itemize}
+    \item Define possible worlds in terms of variables and their domains.
+    \item Compute number of possible worlds on real examples.
+    \item Specify constraints to represent real world problems differentiating between:
+        \begin{itemize}
+            \item Unary and k-ary constraints
+            \item List vs. function format
+        \end{itemize}
+    \item Verify whether a possible world satisfies a set of constraints (i.e. whether it is a model, a solution)
+    \item Implement the Generate-and-Test Algorithm. Explain disadvantages.
+    \item Solve a CSP by search (specify neighbours, states, start state, goal state). Compare strategies for CSP search. Implement pruning for DFS search in CSP.
+    \item Build a constraint network for a set of constraints.
+    \item Verify whether a network is arc consistent.
+    \item Make an arc arc-consistent.
+    \item Define/read/write/trace/debug the arc consistency algorithm. Compute its complexity and assess its possible outcomes.
+    \item Define/read/write/trace/debug domain splitting and its integration with arc consistency.
+    \item Local search for a CSP
+        \begin{itemize}
+            \item different ways to generate neighbours
+            \item scoring functions to solve a CSP by local search
                 \begin{itemize}
-                    \item BFS vs. DFS vs. IDS
-                    \item LCFS vs. BestFS
-                    \item A* vs B\&B vs. IDA* vs MBA*
+                    \item through either greedy descent/hill climbing
                 \end{itemize}
-            \item Define/read/write/trace/debug different search algorithms
-                \begin{itemize}
-                    \item With/without cost
-                    \item Informed/uninformed
-                \end{itemize}
-            \item Construct admissible heuristics for a given problem.
-            \item Verify Heuristic Dominance.
-            \item Combine admissible heuristics.
-            \item Formally prove A* optimality.
-            \item Justify and describe methods for pruning cycles and repeated states (multiple paths).
+        \end{itemize}
+    \item Implement SLS with
+        \begin{itemize}
+            \item random steps (1-step, 2-step versions)
+            \item random descent
+        \end{itemize}
+    \item Compare SLS algorithms with runtime distributions.
+    \item Implement the simulated annealing algorithm.
+    \item Implement a Taboo list.
+    \item Explain pros and cons of different SLS algorithms.
+\end{itemize}
+
+\subsubsection{Planning}
+
+\begin{itemize}
+    \item Represent a planning problem with the STRIPS representation.
+    \item Explain the STRIPS assumption.
+    \item Solve a planning problem by search (forward planning). Specify states, successor function, goal test and solution.
+    \item Construct and justify a heuristic function for forward planning.
+    \item Translate a planning problem represented in STRIPS into a corresponding CSP problem (and vice versa).
+    \item Solve a planning problem with CSP by expanding the horizon.
+\end{itemize}
+
+\subsubsection{Logic}
+
+\begin{itemize}
+    \item PDCL syntax \& semantics
+        \begin{itemize}
+            \item Verify whether a logical statement belongs to the language of propositional definite clauses.
+            \item Verify whether an interpretation is a model of a PDCL KB.
+            \item Verify when a conjunction of atoms is a logical consequence of a KB.
+        \end{itemize}
+    \item Bottom-up proof procedure
+        \begin{itemize}
+            \item Define/read/write/trace/debug the Bottom Up (BU) proof procedure.
+            \item Prove that the BU proof procedure is sound and complete.
+        \end{itemize}
+    \item Top-down proof procedure
+        \begin{itemize}
+            \item Define/read/write/trace/debug the Top-down (SLD) proof procedure.
+            \item Prove that the TD proof procedure is sound and complete.
+        \end{itemize}
+    \item Datalog
+        \begin{itemize}
+            \item Represent simple domains in Datalog.
+            \item Apply the Top-down proof procedure in Datalog.
         \end{itemize}
 \end{itemize}
 
