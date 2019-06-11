@@ -600,7 +600,13 @@
 \begin{itemize}
     \item Time taken is a random variable.
     \item Runtime variations of 2 order of magnitude in repeated runs.
-    \item Stagnation $\Rightarrow$ $\infty$ runtime
+    \item Stagnation $\Rightarrow$ $\infty$ mean runtime
+    \item Runtime distribu2tion
+        \begin{itemize}
+            \item x-axis: runtime/number of steps
+            \item y-axis: proportion/number of runs solved in that runtime
+            \item mean/median/mode runtime doesn't tell the whole story.
+        \end{itemize}
 \end{itemize}
 
 \subsection{SLS Variants}
@@ -742,11 +748,12 @@
 \subsection{Planning as CSP}
 
 \begin{itemize}
-    \item Constraints: preconditions and effects
+    \item Constraints:
         \begin{itemize}
-            \item action
-            \item state in which it can be applied to
-            \item state that it can generate
+            \item \textbf{Initial state constraints}: constrain the state variables at time 0, i.e. before any actions has occurred.
+            \item \textbf{Goal constraints}: constrain at some time $k$, where $k$ is the horizon.
+            \item \textbf{Precondition constraints}: constraints between state variables at time $t$ and actions at time $t$, i.e. they specify what must hold for an action to take place.
+            \item \textbf{Effect constraints}: constraints between state variables at time $t$, actions at time $t$, and state variables at time $t + 1$, i.e. a state variable at time $t + 1$ is affected by actions at time $t$ and its own previous value at time $t$.
         \end{itemize}
     \item Variables: states and actions
     \item Constraints relate to states at a given time $t$, the corresponding valid actions and the resulting states at $t + 1$.
