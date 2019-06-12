@@ -833,11 +833,7 @@
 \subsection{Bottom-Up Proof Procedure}
 
 \begin{itemize}
-    \item If $h \leftarrow b_1 \wedge \ldots \wedge b_m$ is a clause in $KB$ and each $b_i$ has been derived, then $h$ can be derived.
-        \begin{itemize}
-            \item If $m = 0$, $h$ becomes a fact.
-        \end{itemize}
-    \item proof procedure:
+    \item Proof procedure:
     \begin{algorithmic}
         \State{$C \gets \{\}$}
         \Repeat
@@ -853,12 +849,52 @@
     \includegraphics[scale=0.45]{completeness_of_bu}
 \end{itemize}
 
+\subsection{Top-Down Proof Procedure}
+
+\begin{itemize}
+    \item Proof procedure:
+    \begin{algorithmic}
+        \State{$ac := yes \leftarrow \text{body}$ (body is $q_1 \wedge \ldots \wedge q_k$)}
+        \Repeat
+            \State{Select $q_i \in \text{body}$}
+            \State{Choose clause $c_i \in KB$, $c_i$ is $q_i \leftarrow b_c$}
+            \State{Replace $q_i$ in body by $b_c$}
+        \Until{$ac$ is an answer (fail if no clause with $q_i$ as head)}
+    \end{algorithmic}
+    \item
+    \includegraphics[scale=0.45]{soundness_of_td}
+    \item
+    \includegraphics[scale=0.45]{completeness_of_td}
+\end{itemize}
+
+\subsection{Top-Down as Search}
+
+\begin{itemize}
+    \item query stated as an answer clause $\Rightarrow$ an answer
+    \item \textbf{State}: answer clause of the form $\text{yes} \leftarrow a_1 \wedge \ldots \wedge a_k$
+    \item Successor function: state resulting from submitting first atom $a_1$ with $b_1 \wedge \ldots \wedge b_m$ if there is a clause $a_1 \leftarrow b_1 \wedge \ldots \wedge b_m$
+    \item \textbf{Goal test}: is the answer clause empty (i.e. $\text{yes} \leftarrow$)?
+    \item \textbf{Solution}: the proof, i.e. sequence of SLD solutions
+    \item \textbf{Heuristic function}: ???
+\end{itemize}
+
 \subsection{Datalog}
 
 \begin{itemize}
     \item Datalog vs. PDCL
 
     \includegraphics[scale=0.3]{datalog_vs_pdcl}
+    \item Syntax
+        \begin{itemize}
+            \item \textbf{Variable}: symbol starting with an upper-case letter.
+            \item \textbf{Constant}: symbol starting with a lower-case letter/a sequence of digits.
+            \item \textbf{Term}: variable/constant.
+            \item \textbf{Predicate symbol}: symbol starting with a lower-case letter.
+            \item \textbf{Atom}: symbol of the form $p$/$p(t_1 \ldots t_n$ where $p$ is a predicate symbol and $t_i$ are terms.
+            \item \textbf{Definite clause}: atom/of the form: $h$ and $b_i$ are atoms (``$h$ if $b$'')
+            \item \textbf{KB} = set of definite clauses
+        \end{itemize}
+    \item Top-Down Proof Procedure (Lecture 21 Slides 9 - 11)
 \end{itemize}
 
 \section{Appendix}
