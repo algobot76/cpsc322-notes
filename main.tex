@@ -9,6 +9,9 @@
 \usepackage{algpseudocode}
 \usepackage{multicol}
 \usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+
+\newcommand{\bigCI}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}
 
 \title{CPSC 322 Introduction to AI}
 \author{Kaitian Xie}
@@ -897,11 +900,165 @@
     \item Top-Down Proof Procedure (Lecture 21 Slides 9 - 11)
 \end{itemize}
 
+\section{Probability}
+
+\subsection{Intro to Reasoning Under Uncertainty}
+
+\begin{itemize}
+    \item Two types of uncertainty:
+        \begin{itemize}
+            \item \textbf{Sensing uncertainty}: The agent cannot fully observe a state of interest.
+            \item \textbf{Effect uncertainty}: The agent cannot be certain about the effects of its actions.
+        \end{itemize}
+    \item Belief in a proposition $f$ can be measured in terms of a number between 0 and 1.
+\end{itemize}
+
+\subsection{Intro to Probability}
+
+\begin{itemize}
+    \item \textbf{Probability theory}: system of logical axioms and formal operations for sound reasoning under uncertainty.
+    \item \textbf{Basic element}: random variable $X$
+        \begin{itemize}
+            \item The agent can be uncertain about the value of $X$.
+            \item Domain of $X$ = $dom(X)$
+        \end{itemize}
+    \item \textbf{Types of variables}: boolean, categorical,
+    numeric.
+    \item \textbf{Complex random variable}: a tuple of random variables $<X_1, \ldots, X_n>$ with domain $dom(X_1) \times dom(X_2) \times \ldots \times \ldots dom(X_n)$.
+    \item \textbf{Assignment}: $X = x$ means $X$ has value $x$.
+    \item \textbf{Proposition}: boolean formula made from assignment of values to variables.
+    \item \textbf{Possible world}: an assignment to each random variable (possible worlds are mutually exclusive and exhaustive).
+        \begin{itemize}
+            \item $w \vDash f$ means proposition $f$ is true in world $w$.
+            \item A probability measure $\mu(w)$ over possible worlds $w$ is a non-negative number such that $\mu(w)$ sums to 1 over all possible worlds $w$.
+            \item $P(f) = \sum_{w \vDash f} \mu(w)$
+        \end{itemize}
+    \item \textbf{Probability distributions P}: on a random variable $X$ is a function $dom(X) \rightarrow [0, 1]$ such that $x \rightarrow P(X = x)$.
+\end{itemize}
+
+\subsection{Marginalization}
+
+\begin{itemize}
+    \item \textbf{Joint probability distribution (JPD)}: a probability distribution over the joint random variable $<X_1, \ldots, X_n>$.
+        \begin{itemize}
+            \item n-dimensional table of the corresponding possible worlds
+                \begin{itemize}
+                    \item row = assignment + probability
+                    \item sum of probabilities = 1;
+                \end{itemize}
+        \end{itemize}
+    \item \textbf{Marginalization}:
+        \begin{equation*}
+            P(\textcolor{blue}{X = x, Y = y, \ldots}) = \sum_{\textcolor{red}{z_1 \in dom(Z_1), \ldots, z_n \in dom(Z_n)}} P(\textcolor{blue}{X = x, Y = y, \ldots}, \textcolor{red}{Z_1 = z_1, \ldots, Z_n = Z_n})
+        \end{equation*}
+\end{itemize}
+
+\subsection{Conditioning}
+
+\begin{itemize}
+    \item \textbf{Conditioning}: revise beliefs based on new observations
+        \begin{itemize}
+            \item Build on a probabilistic model (JPD).
+                \begin{itemize}
+                    \item \textbf{Prior probability distribution}: all background info ($P(h)$ = prior probability for hypothesis $h$).
+                \end{itemize}
+            \item Observe new information about the world.
+                \begin{itemize}
+                    \item \textbf{Evidence ($e$)}: info received subsequently.
+                \end{itemize}
+            \item Integrate the two sources of info.
+                \begin{itemize}
+                    \item \textbf{Conditional probability $P(h|e)$} (also called \textbf{Posterior probability})
+                \end{itemize}
+        \end{itemize}
+    \item \textbf{Conditional probability}
+        \begin{equation*}
+            P(h|e) = \frac{P(h \wedge e)}{P(e)}
+        \end{equation*}
+        \begin{itemize}
+            \item $P(e)$ = sum of probability for all worlds in which $e$ is true.
+            \item $P(h \wedge e)$ = sum of probability for all worlds in which both $h$ and $e$ are true.
+        \end{itemize}
+\end{itemize}
+
+\subsection{Inference by Enumeration}
+
+\begin{itemize}
+    \item Given
+        \begin{itemize}
+            \item JPD on a set of variables $X$
+            \item specific values $e$ for the evidence variables $E$ (a subset of $X$)
+        \end{itemize}
+    \item Compute
+        \begin{itemize}
+            \item posterior joint distribution of query variables $Y$ (a subset of $X$)
+        \end{itemize}
+    \item Steps:
+        \begin{enumerate}
+            \item Condition to get distribution $P(X|e)$
+            \item Marginalize to get distribution $P(Y|e)$
+        \end{enumerate}
+    \item Problems of inference by enumeration
+        \begin{itemize}
+            \item $n$ = number of variables, $d$ = size of the largest domain
+            \item Space complexity: $O(d^n)$ possible worlds
+            \item Time complexity: $O(d^n)$ sum over all entries in JPD
+        \end{itemize}
+\end{itemize}
+
+\subsection{Bayes Rules}
+
+\begin{align*}
+    P(h|e) = \frac{P(h \wedge e)}{P(e)} \qquad &\text{and} \qquad P(e|h) = \frac{P(e \wedge h)}{P(h)} \\
+    P(h \wedge e) &= P(h|e) \times P(e) \\
+    P(e \wedge h) &= P(e|h) \times P(h) \\
+    P(h \wedge e) &= P(e \wedge h) \\
+    \Rightarrow P(h|e) &= \frac{P(e|h)P(h)}{P(e)}
+\end{align*}
+
+\subsection{Product Rule}
+
+\begin{align*}
+    P(f_2|f_1) &= \frac{P(f_2 \wedge f_1)}{P(f_2)} \\
+    \Rightarrow P(f_2 \wedge f_1) &=  P(f_2|f_1) \times P(f_1) \\
+    \Rightarrow P(\textcolor{blue}{f_n \wedge \ldots \wedge f_{i + 1} \wedge \textcolor{red}{f_i \wedge \ldots \wedge f_1}}) &x= P(\textcolor{blue}{f_n \wedge \ldots \wedge f_{i + 1} | \textcolor{red}{f_i \wedge \ldots \wedge f_1}}) \times P(\textcolor{red}{f_i \wedge \ldots \wedge f_1}) \tag{in general}
+\end{align*}
+
+\subsection{Chain Rule}
+
+\begin{align*}
+    P(\textcolor{blue}{f_2} \wedge \textcolor{red}{f_1}) &= P(\textcolor{blue}{f_2}|\textcolor{red}{f_1}) \times P(\textcolor{red}{f_1}) \\
+    P(\textcolor{blue}{f_n} \wedge \textcolor{red}{f_{n-1} \wedge \ldots \wedge f_1}) &= P(\textcolor{blue}{f_n} | \textcolor{red}{f_{n-1} \wedge \ldots \wedge f_1}) \times P(\textcolor{red}{f_{n-1} \wedge \ldots \wedge f_1}) \tag{in general} \\
+    &= P(\textcolor{blue}{f_n} | \textcolor{red}{f_{n-1} \wedge \ldots \wedge f_1}) \times P(\textcolor{red}{f_{n-1}} | \textcolor{green}{f_{n-2} \wedge \ldots \wedge f_1}) \times P(\textcolor{green}{f_{n-2} \wedge \ldots \wedge f_1}) \\
+    &= \ldots \\
+    P(f_1 \wedge \ldots \wedge f_n) &= \prod\limits_{i = 1}^{n} P(f_i|f_{i - 1} \wedge \ldots \wedge f_1)
+\end{align*}
+
+\subsection{Marginal Independence}
+
+\begin{itemize}
+    \item \textbf{Marginal independence}: Random variable $X$ is (marginally independent) of random variable $Y$ ($X \bigCI Y$), if for all $x_i \in dom(X), y_i \in dom(Y)$ and $y_k \in dom(Y)$, the following equation holds:
+    \begin{align*}
+        P(X = x_i|Y = y_i) &=  P(X = x_i|Y = y_k) \\
+        &= P(X = x_i)
+    \end{align*}
+\end{itemize}
+
+\subsection{Conditional Independence}
+
+\begin{itemize}
+    \item \textbf{Conditional independence}: Random variable $X$ is conditionally independent of random variable $Y$ given random variable $Z$ if, for all $x_i \in dom(X), y_i \in dom(Y), y_k \in dom(Y)$ and $z_m \in dom(Z)$ the following equation holds:
+    \begin{align*}
+        P(X = x_i|Y = y_i, Z = z_m) &= P(X = x_i|Y = y_k, Z = z_m) \\
+        &= P(X = x_i|Z = z_m)
+    \end{align*}
+\end{itemize}
+
 \section{Appendix}
 
 \subsection{Learning Goals}
 
-\subsubsection{Search}
+\subsubsection*{Search}
 
 \begin{itemize}
     \item Identify real world examples that make use of deterministic, goal-driven planning agents.
@@ -926,7 +1083,7 @@
     \item Justify and describe methods for pruning cycles and repeated states (multiple paths).
 \end{itemize}
 
-\subsubsection{CSP}
+\subsubsection*{CSP}
 
 \begin{itemize}
     \item Define possible worlds in terms of variables and their domains.
@@ -963,7 +1120,7 @@
     \item Explain pros and cons of different SLS algorithms.
 \end{itemize}
 
-\subsubsection{Planning}
+\subsubsection*{Planning}
 
 \begin{itemize}
     \item Represent a planning problem with the STRIPS representation.
@@ -974,7 +1131,7 @@
     \item Solve a planning problem with CSP by expanding the horizon.
 \end{itemize}
 
-\subsubsection{Logic}
+\subsubsection*{Logic}
 
 \begin{itemize}
     \item PDCL syntax \& semantics
@@ -998,6 +1155,27 @@
             \item Represent simple domains in Datalog.
             \item Apply the Top-down proof procedure in Datalog.
         \end{itemize}
+\end{itemize}
+
+\subsubsection*{Probability}
+
+\begin{itemize}
+    \item Define and give examples of random variables, their domains and probability distributions.
+    \item Calculate the probability of a proposition f given µ(w) for the set of possible worlds.
+    \item Given a JPD:
+        \begin{itemize}
+            \item Marginalize over specific variables.
+            \item Compute distributions over any subset of the variables.
+        \end{itemize}
+    \item Apply the formula to compute conditional probability $P(h|e)$.
+    \item Use inference by enumeration:
+        \begin{itemize}
+            \item to compute joint posterior probability distributions over any subset of variables given evidence.
+        \end{itemize}
+    \item Derive and use Bayes Rule.
+    \item Derive the Chain Rule.
+    \item Define and use marginal independence.
+    \item Define and use conditional independence.
 \end{itemize}
 
 \end{document}
