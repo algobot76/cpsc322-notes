@@ -1054,6 +1054,49 @@
     \end{align*}
 \end{itemize}
 
+\section{Uncertainty: Belief Network}
+
+\subsection{Intro to Bayesian Network}
+
+\begin{itemize}
+    \item \textbf{Belief (Bayesian) Network (BN)}
+        \begin{itemize}
+            \item DAG where each node is associated with a random variable $X$.
+            \item A domain for each variable $X_i$.
+            \item A set of conditional probability distributions for each node $X_i$ given its parents $Pa(X_i)$ in the graph $P(X_i|Pa(X_i)$.
+        \end{itemize}
+    \textit{Note}:
+        \begin{itemize}
+            \item $Pa(X_i)$ of $X_i$ are the nodes that $X_i$ directly depends on.
+            \item A BN is a compact representation of JDP for a set of variables ($X_1, \ldots, X_n$): $P(X_1, \ldots, X_n) = \prod\limits_{i=1}^{n} P(X_i|Pa(X_1))$.
+            \item Discrete BN:
+                \begin{itemize}
+                    \item Domain of each variable is finite.
+                    \item Conditional probability distribution is a conditional probability table (CPT).
+                \end{itemize}
+        \end{itemize}
+    \item How to build a BN
+        \begin{enumerate}
+            \item Define a total order over the random variables ($X_1, \ldots, X_n$).
+            \item Apply the chain rule: $P(X_1, \ldots, X_n) = \prod\limits_{i=1}^{n} P(X_i|X_1, \ldots, X_{i-1})$.
+            \item For each $X_i$, select the smallest set of $Pa(X_i)$ s.t. $P(X_i|X_1, \ldots, X_{i-1}) = P(X_i|Pa(X_i))$.
+            \item Then we can rewrite: $P(X_1, \ldots, X_n) = \prod_{i=1}^{n} P(X_i|Pa(X_i))$.
+            \item Construct BN
+                \begin{itemize}
+                    \item Nodes are random variables.
+                    \item Directed arc from each variable in $Pa(X_i)$ to $X_i$.
+                    \item CPT from each variable $X_i$: $P(X_i|Pa(X_i))$.
+                \end{itemize}
+        \end{enumerate}
+    \item Example: Fire Diagnosis (Lecture 25 Slides 17 - 29)
+\end{itemize}
+
+\subsection{Defining Conditional Probabilities in a BN}
+
+\begin{itemize}
+    \item Example: Fire Diagnosis (Lecture 25 Slides 31 - 36)
+\end{itemize}
+
 \section{Appendix}
 
 \subsection{Learning Goals}
