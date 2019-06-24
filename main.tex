@@ -1226,6 +1226,125 @@
             \item Normalize by dividing the resulting factor $f(Y)$ by $\sum\limits_{Y} f(Y)$.
         \end{enumerate}
     \item Variable Elimination Example (Lecture 26 Slides 51 - 68)
+        \begin{itemize}
+            \item Pruning: before we run VE, prune
+                \begin{itemize}
+                    \item variables $Z$ that are conditionally independent of the query $Y$ given evidence $E$.
+                    \item unobserved leaf nodes
+                \end{itemize}
+        \end{itemize}
+    \item Complexity
+        \begin{itemize}
+            \item A factor over $n$ binary variables has to store $2^n$ numbers.
+            \item Complexity of VE is exponential in the maximum number of variables in any factor during its execution.
+            \item Finding the best ordering is NP complete.
+        \end{itemize}
+\end{itemize}
+
+\section{Decision Theory}
+
+\subsection{Single-Stage Decision Problems}
+\begin{itemize}
+    \item \textbf{Possible world}: assignment of values to random variables and decision variables.
+        \begin{itemize}
+            \item For each assignment of values to all decision variables, the probabilities of the corresponding worlds satisfying that assignment sum to 1.
+        \end{itemize}
+    \item \textbf{Utility}: a measure of desirability of possible worlds to an agent ($[0, 100]$).
+    \item \textbf{Expected utility}: the value for the agent of achieving a certain probability distribution over outcomes (possible worlds).
+        \begin{itemize}
+            \item $E(U|D=d_i) = \sum\limits_{w \vDash (D=d_i)} P(w)U(w)$.
+        \end{itemize}
+    \item \textbf{Optimal single-stage decision}: decision $D=d_{max}$ whose expected value is maximal.
+        \begin{itemize}
+            \item $d_{max} \in argmax_{d_i \in dom(D)} E[U|D=d_i]$
+        \end{itemize}
+\end{itemize}
+
+\subsection{Decision Networks}
+
+\begin{itemize}
+    \item BN\\
+        \includegraphics[scale=0.5]{decisions_network_bn.png}
+        \begin{itemize}
+            \item \textbf{Random variables}: same as in BN.
+                \begin{itemize}
+                    \item Ellipse.
+                    \item Incoming arcs = probabilistic dependence.
+                    \item Conditionally independent of non-descendents given its parents.
+                \end{itemize}
+            \item \textbf{Decision nodes}: nodes that the agent choose values for.
+                \begin{itemize}
+                    \item Rectangle.
+                    \item Parents: only other decision nodes allowed, = info available when the decision is made.
+                    \item Domain: set of possible actions.
+                \end{itemize}
+            \item \textbf{Utility node (exactly one)}: specifies a utility for each instantiation of its parents.
+                \begin{itemize}
+                    \item Diamond.
+                    \item Parents: all random \& decision variables on which the utility depends.
+                \end{itemize}
+        \end{itemize}
+    \item Compute the optimal decision: use VE.
+        \begin{itemize}
+            \item
+                \begin{align*}
+                    E(U) &= \sum\limits_{X_1, \ldots, X_n} P(X_1, \ldots, X_n|D)U(Pa(D)) \\
+                    &= \sum\limits_{X_1, \ldots, X_n} \prod\limits_{i=1}^{n} P(X_i|Pa(X_i))U(Pa(U))
+                \end{align*}
+            \item VE Example (Lecture 27 Slides 20 - 32)
+                \begin{enumerate}
+                    \item Create initial factors.
+                    \item Sum out $A$.
+                        \begin{itemize}
+                            \item Compute product $f(A, W, P)$.
+                            \item Sum $A$ out of $f(A, W, P)$.
+                        \end{itemize}
+                    \item Choose decision with max $E(U)$.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Sequential Decision Problems}
+
+\begin{itemize}
+    \item Subsequent actions can depend on what is observed.
+        \begin{itemize}
+            \item Observations based on previous actions.
+            \item Carrying out an action $\Rightarrow$ info for future actions.
+        \end{itemize}
+    \item Its decisions network is similar to a single-stage decision network except that the parents of a decision nodes can include random variables.
+    \item Single action vs. sequence of actions
+     \begin{multicols}{2}
+            Single Action (One-Off Decisions)
+            \begin{itemize}
+                \item One or more primitive decisions treated as a single macro decision to be made before acting.
+            \end{itemize}
+            
+            \columnbreak
+            
+            Sequence of Actions (Sequential Decisions)
+            \begin{itemize}
+                \item Repeat observation $\Rightarrow$ decision $\Rightarrow$ action.
+                \item Agent has to take actions not knowing for sure what the future brings.
+            \end{itemize}
+        \end{multicols}
+    \item Each decision variable $D_i$ has an info set of variables $Pa(D_i)$, whose values will be known at the time decision $D_i$ is made.
+    \item \textbf{No-forgetting property}: decision variables are totally ordered ($D_1, \ldots, D_m$).
+        \begin{itemize}
+            \item If a decision $D_i$ comes before $D_j$, then
+                \begin{itemize}
+                    \item $D_i$ is a parent of $D_j$
+                    \item any parent of $D_i$ is a parent of $D_j$
+                \end{itemize}
+        \end{itemize}
+    \item \textbf{Policy ($\pi$)}: a sequence of $\delta_1, \ldots, \delta_n$ decision functions ($\delta_i : dom(Pa(D_i)) \rightarrow dom(D_i)$).
+        \begin{itemize}
+            \item When the agent has observed $o \in dom(Pa(D_i))$, it will do $\delta_i(o)$.
+            \item $k$ binary parents of a decision $D$ $\Rightarrow$ $2^k$ different assignments to the parents.
+            \item $b$ possible values for $D$ $\Rightarrow$ $b^{2^k}$ different decision functions.
+            \item $d$ decision variables $\Rightarrow$ $(b^{2^k})^d$ different policies.
+            \item Use VE to find the policy with the maximum expceted utility.
+        \end{itemize}
 \end{itemize}
 
 \section{Appendix}
@@ -1364,6 +1483,30 @@
             \item Understating factors and their operations.
             \item Carry out variable elimination by using factors and the related operations.
             \item Use techniques to simplify variable elimination.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection*{Decision Theory}
+
+\begin{itemize}
+    \item One-off decisions
+        \begin{itemize}
+            \item Compare and contrast stochastic single-stage (one-off) decisions vs. multistage (sequential) decisions.
+            \item Define a Utility Function on possible worlds.
+            \item Define and compute optimal one-off decisions.
+            \item Represent one-off decisions as single stage decision networks.
+            \item Compute optimal decisions by Variable Elimination.
+        \end{itemize}
+    \item Sequential decision networks
+        \begin{itemize}
+            \item Represent sequential decision problems as decision networks.
+            \item Explain the non forgetting property.
+        \end{itemize}
+    \item Policies
+        \begin{itemize}
+            \item Verify whether a possible world satisfies a policy.
+            \item Define the expected utility of a policy.
+            \item Compute the number of policies for a decision problem.
         \end{itemize}
 \end{itemize}
 
