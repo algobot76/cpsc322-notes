@@ -984,20 +984,24 @@
 \subsection{Inference by Enumeration}
 
 \begin{itemize}
-    \item Given
+    \item Query
         \begin{itemize}
-            \item JPD on a set of variables $X$
-            \item specific values $e$ for the evidence variables $E$ (a subset of $X$)
-        \end{itemize}
-    \item Compute
-        \begin{itemize}
-            \item posterior joint distribution of query variables $Y$ (a subset of $X$)
+            \item Given:
+                \begin{itemize}
+                    \item JPD on a set of variables $X$
+                    \item specific values $e$ for the evidence variables $E$ (a subset of $X$)
+                \end{itemize}
+            \item Compute:
+                \begin{itemize}
+                    \item posterior joint distribution of query variables $Y$ (a subset of $X$)
+                \end{itemize}
         \end{itemize}
     \item Steps:
         \begin{enumerate}
             \item Condition to get distribution $P(X|e)$
             \item Marginalize to get distribution $P(Y|e)$
         \end{enumerate}
+    \item Temperature Weather Example (Lecture 23 Slides 37 - 40)
     \item Problems of inference by enumeration
         \begin{itemize}
             \item $n$ = number of variables, $d$ = size of the largest domain
@@ -1034,6 +1038,11 @@
     P(f_1 \wedge \ldots \wedge f_n) &= \prod\limits_{i = 1}^{n} P(f_i|f_{i - 1} \wedge \ldots \wedge f_1)
 \end{align*}
 
+\begin{itemize}
+    \item Chain rule allows us to represent a JPD as a product of conditional propability distributions, e.g. $P(A, B, C, D) = P(A) \times P(B|A) \times P(C|A, B) \times P(D|A, B, C)$.
+    \item Chain rule helps us simplify some terms when the variables involved are marginally/conditionally independent.
+\end{itemize}
+
 \subsection{Marginal Independence}
 
 \begin{itemize}
@@ -1042,6 +1051,19 @@
         P(X = x_i|Y = y_i) &=  P(X = x_i|Y = y_k) \\
         &= P(X = x_i)
     \end{align*}
+    \item Coin Toss Example (Lecture 24 Slides 26 - 31)
+    \item Temperature Weather Example (Lecture 24 Slides 32 - 34)
+\end{itemize}
+
+\begin{align*}
+    P(X = x \wedge Y = y) &= P(X = x | Y = y) \times P(Y = y) \tag{Product Rule}\\
+    P(X = x | Y = y) &= P(X = x) \tag{$X$ \& $Y$ are marginally independent}\\
+    \Rightarrow P(X = x \wedge Y = y) &= P(X = x) \times P(Y = y)
+\end{align*}
+
+\begin{itemize}
+    \item If $X_1, \ldots, X_n$ are marginally independent, $P(X_1, \ldots, X_n) = \prod\limits_{i = 1}^{n} P(X_i)$.
+    \item $2n$ entries in total (assume that $X_1, \ldots, X_n$ are boolean variables).
 \end{itemize}
 
 \subsection{Conditional Independence}
@@ -1052,6 +1074,11 @@
         P(X = x_i|Y = y_i, Z = z_m) &= P(X = x_i|Y = y_k, Z = z_m) \\
         &= P(X = x_i|Z = z_m)
     \end{align*}
+    \item Example (Lecture 24 Slides 43 - 45)
+    \item With conditional independence, we gain compactness e.g.
+        \begin{itemize}
+            \item $P(A, B, C, D) = P(A) \times P(B|A) \times P(C|A, B) \times P(D|A, B, C)$ \& if $D$ is conditionally independent from $A, B$ given $C$, then $P(A, B, C, D) = P(A) \times P(B|A) \times P(C|A, B) \times P(D|C)$
+        \end{itemize}
 \end{itemize}
 
 \section{Uncertainty: Belief Network}
@@ -1095,6 +1122,110 @@
 
 \begin{itemize}
     \item Example: Fire Diagnosis (Lecture 25 Slides 31 - 36)
+\end{itemize}
+
+\subsection{Considerations on Network Structure}
+
+\begin{itemize}
+    \item Compactness
+        \begin{itemize}
+            \item A CPT for a boolean variable $X_i$ with $k$ boolean parents has $2^k$ rows for the combinations of parent values.
+            \item Each row requires one number $p$ for $X_i = T$ (the number for $X_i = F$ is $1 - p$).
+            \item If each variable has no more than $k$ parents, the complete network requires to specify $O(n2^k)$ numbers.
+            \item BN is useful in sparse domains.
+            \item A non-causal BN is less compact. A fully-connected BN is always correct but rarely the best choice.
+            \item BN can be wrong if it misses directed edges that are required.
+        \end{itemize}
+    \item Dependencies in BN \\
+    \includegraphics[scale=0.5]{dependencies_in_bn}
+    \item Conditional independencies in BN \\
+    \includegraphics[scale=0.5]{cond_independencies_in_bn.png}
+    \item \textbf{Markov Blanket}: minimum set of nodes that must be observed in order to make $X$ independent from all the non-observed nodes.\\
+    \includegraphics[scale=0.5]{markov_blanket}
+    \item Types of inferences \\
+    \includegraphics[scale=0.4]{types_of_inference}
+\end{itemize}
+
+\subsection{Variable Elimination}
+
+\begin{itemize}
+    \item Inference
+        \begin{itemize}
+            \item
+            \begin{equation*}
+                P(Y|E=e) = \frac{P(Y, E=e)}{P(E=e)} = \frac{P(Y, E=e)}{\sum\limits_{Y} P(Y, E=e)}
+            \end{equation*}
+            \begin{itemize}
+                \item $Y$: subset of variables that is queried
+                \item $E$: subset of variables that are observed
+                \item $Z_1, \ldots, Z_k$: remaining variables in JPD
+            \end{itemize}
+            \item We only need to compute the numerator and Variable Elimination efficiently perform this operation by casting it as operations between factors.
+        \end{itemize}
+    \item Factors
+        \begin{itemize}
+            \item \textbf{Factor}: function from a tuple of random variables to the real number $R$.
+                \begin{itemize}
+                    \item $P(X_1, X_2) = f(X_1, X_2)$
+                    \item $P(Z|X, Y) = f(Z, X, Y)$
+                    \item $P(Z=f|X, Y) = f(Z, X, Y)_{Z=f}$
+                \end{itemize}
+            \item Factors don't have to sum to one.
+            \item Operations
+                \begin{enumerate}
+                    \item Assign a variable.
+                        \begin{itemize}
+                            \item e.g. Assign $A=a$ in $f(A, B)$ $\Rightarrow$ $f(B)$.
+                        \end{itemize}
+                \end{enumerate}
+            \item Marginalize out a variable.
+                \begin{itemize}
+                    \item e.g. Marginalize $A$ out of $f(A, B)$ $\Rightarrow$ $f(B)$.
+                \end{itemize}
+            \item Multiply factors: $(f_1 \times f_2)(A, B, C) = f_1(A, B) \times f_2(B, C)$ ($B$ = a variable/set of variables in common).
+                \begin{itemize}
+                    \item e.g. Multiply $f_4(X, Y)$ and $f_6(Z, Y)$ $\Rightarrow$ $f(X, Y, Z)$.
+                \end{itemize}
+        \end{itemize}
+    \item Algorithm: to compute $P(Y=y_i|E=e)$
+        \begin{enumerate}
+            \item Construct a factor for each conditional probability.
+                \begin{itemize}
+                    \item Express the joint probability as a factor: $f(Y, E_1 \ldots E_j, Z_1 \ldots Z_k)$.
+                \end{itemize}
+            \item For each factor, assign the observed variables $E$ to their observed values.
+                \begin{itemize}
+                     \item Assign $E_1 = e_1, \ldots, E_j = e_j$.
+                \end{itemize}
+            \item Given an elimination ordering, decompose sum of products.
+                \begin{itemize}
+                    \item $P(X_i|Pa(X_1)) = f(X_i, Pa(X_i)) = f_i$
+                    \item
+                        \begin{align*}
+                            P(Y, E_1 = e_1, \ldots, E_j = e_j) &= \sum\limits_{Z_k} \dots \sum\limits_{Z_1} f(Y, E_1 \ldots E_j, Z_1 \ldots Z_k)_{E_1 = e_1, \ldots, E_j = e_j} \\
+                            &= \sum\limits_{Z_k} \dots \sum\limits_{Z_1} \prod\limits_{i=1}^{n} (f_i)_{E_1 = e_1, \ldots, E_j = e_j}
+                        \end{align*}
+                    \item Inference in BN: to efficiently compute $\sum\limits_{Z_k} \prod\limits_{i=1}^{n} f_i$, factor out those terms that don't involve $Z_k$.
+                \end{itemize}
+            \item Sum out all variables $Z_i$ not involved in the query.
+                \begin{itemize}
+                    \item Marginalize out $Z_1, \ldots, Z_k$, one at a time.
+                    \item Partition factors into
+                        \begin{itemize}
+                            \item $f_1, \ldots, f_i$ those don't contain $Z$.
+                            \item $f_{i+1}, \ldots, f_k$ those contain $Z$.
+                            \item
+                            \begin{align*}
+                                \sum\limits_{Z} f_1 \times \dots \times f_k &= f_1 \times \dots \times f_i \times (\sum\limits_{Z} f_{i+1} \times \dots \times f_k) \\
+                                &= f_1 \times \dots \times f_i \times f'
+                            \end{align*}
+                            \item \includegraphics[scale=0.35]{simplify_sum_of_product}
+                        \end{itemize}
+                \end{itemize}
+            \item Multiply the remaining factors, which only involve $Y$.
+            \item Normalize by dividing the resulting factor $f(Y)$ by $\sum\limits_{Y} f(Y)$.
+        \end{enumerate}
+    \item Variable Elimination Example (Lecture 26 Slides 51 - 68)
 \end{itemize}
 
 \section{Appendix}
