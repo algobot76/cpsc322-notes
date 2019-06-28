@@ -822,15 +822,25 @@
                 \end{itemize}
             \item If $KB$ is a set of clauses and $G$ is a conjunction of atoms, G is a logical consequence of KB ( $KB \vDash G$) if $G$ is true in every model of $KB$.
         \end{itemize}
+    \item Sound \& complete
+        \begin{itemize}
+            \item \textbf{Sound}: only generate correct answers with respect to the semantics.
+            \item \textbf{Complete}: guaranteed to find an answer if it exists
+        \end{itemize}
 \end{itemize}
 
 \subsection{Proof Procedures}
 
 \begin{itemize}
     \item \textbf{Proof procedure}: a mechanically derivable demonstration that a formula logically follows from a KB.
-    \item Given a proof procedure $P$, $KB \vdash_P g$ means $g$ can be derived from KB with the proof procedure.
     \item A proof procedure $P$ is sound if $KB \vdash_P g$ implies $KB \vDash g$.
+        \begin{itemize}
+            \item Every atom derived from $P$ follows logically from $KB$ (i.e. is true in every model).
+        \end{itemize}
     \item A proof procedure $P$ is complete if $KB \vDash g$ implies $KB \vdash_P g$.
+        \begin{itemize}
+            \item Every atom that logically follows from KB is derived by $P$.
+        \end{itemize}
 \end{itemize}
 
 \subsection{Bottom-Up Proof Procedure}
@@ -1172,12 +1182,10 @@
                 \end{itemize}
             \item Factors don't have to sum to one.
             \item Operations
-                \begin{enumerate}
-                    \item Assign a variable.
-                        \begin{itemize}
-                            \item e.g. Assign $A=a$ in $f(A, B)$ $\Rightarrow$ $f(B)$.
-                        \end{itemize}
-                \end{enumerate}
+                \item Assign a variable.
+                    \begin{itemize}
+                        \item e.g. Assign $A=a$ in $f(A, B)$ $\Rightarrow$ $f(B)$.
+                    \end{itemize}
             \item Marginalize out a variable.
                 \begin{itemize}
                     \item e.g. Marginalize $A$ out of $f(A, B)$ $\Rightarrow$ $f(B)$.
@@ -1343,8 +1351,11 @@
             \item $k$ binary parents of a decision $D$ $\Rightarrow$ $2^k$ different assignments to the parents.
             \item $b$ possible values for $D$ $\Rightarrow$ $b^{2^k}$ different decision functions.
             \item $d$ decision variables $\Rightarrow$ $(b^{2^k})^d$ different policies.
-            \item Use VE to find the policy with the maximum expceted utility.
+            \item Use VE to find the policy with the maximum expected utility.
         \end{itemize}
+    \item \textbf{Expected utility of a policy}: $E[\pi] = \sum\limits_{w \vDash \pi} P(w)U(w)$.
+    \item \textbf{Optimal policy ($\pi_{max}$)}: policy whose expected utility is maximal among all possible policies ($\Pi$): $\pi_{max} \in argmax_{\pi in \Pi} E[\pi]$.
+    \item \textbf{Satisfaction of a policy}: A possible world ($w$) satisfies a policy $\pi$, written $w \vDash \pi$, if the value of each decision variable in $w$ is the value of the value selected by its decision function in policy $\pi$ (when applied to $w$).
 \end{itemize}
 
 \section{Appendix}
